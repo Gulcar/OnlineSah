@@ -47,6 +47,7 @@ class Game
     currentAvailableCastles: [PieceMove, PieceMove][];
 
     prevMove: PieceMove;
+    enPassantMoves: PieceMove[];
 
     constructor(id: string) {
         this.id = id;
@@ -63,6 +64,7 @@ class Game
         this.currentAvailableCastles = [];
 
         this.prevMove = { from: 0, to: 0 };
+        this.enPassantMoves = [];
 
         this.board = [];
         for (let i = 8; i <= 15; i++) {
@@ -253,6 +255,9 @@ class Game
     }
 
     checkEnPassant() {
+
+        this.enPassantMoves = [];
+
         if ((this.board[this.prevMove.to] instanceof Pawn) == false)
             return;
         
@@ -302,6 +307,7 @@ class Game
 
             if (this.isCheck(this.turnWhite) == false) {
                 this.possibleMoves.push(move);
+                this.enPassantMoves.push(move);
             }
 
             this.board[move.to] = pieceTo;
@@ -353,25 +359,23 @@ class Game
     }
 
     checkIfMoveEnPassant(move: PieceMove) {
-        if ((this.board[move.to] instanceof Pawn) == false)
+
+        if (this.enPassantMoves.find(m => m.from == move.from && m.to == move.to) == undefined)
             return;
-        if (Math.abs(move.to - move.from) == 7 ||
-            Math.abs(move.to - move.from) == 9) {
 
-            let rmIndex: number;
-            if (this.board[move.to]!.white) {
-                rmIndex = move.to + 8;
-            } else {
-                rmIndex = move.to - 8;
-            }
-
-            io.to(this.whiteSocketId).emit("en-passant", rmIndex);
-            io.to(this.blackSocketId).emit("en-passant", rmIndex);
-
-            this.board[rmIndex] = null;
-
-            console.log("en passant happened!");
+        let rmIndex: number;
+        if (this.board[move.to]!.white) {
+            rmIndex = move.to + 8;
+        } else {
+            rmIndex = move.to - 8;
         }
+
+        io.to(this.whiteSocketId).emit("en-passant", rmIndex);
+        io.to(this.blackSocketId).emit("en-passant", rmIndex);
+
+        this.board[rmIndex] = null;
+
+        console.log("en passant happened!");
     }
 
     checkPromotion(index: number) {
