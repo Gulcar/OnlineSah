@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Online Šah</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            background-color: rgb(36, 36, 36);
+            color: white;
+            font-family: 'Roboto', sans-serif;
+            font-size: 1.3rem;
+            text-align: center;
+            padding-top: 3em;
+        }
+        .game {
+            cursor: pointer;
+            text-decoration: underline;
+            padding-bottom: 0.2em;
+        }
+        .two-sides {
+            display: grid;
+            grid-template-columns: 50% 50%;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        input, button {
+            background-color: rgb(10, 10, 10);
+            border: black;
+            color: white;
+            text-align: center;
+            font-size: 1.2rem;
+            margin-bottom: 0.4em;
+            padding: 0.3em;
+        }
+    </style>
+</head>
+<body>
+    <h1>Online Šah</h1>
+    <div class="two-sides">
+        <div>
+            <h3>trenutne igre:</h3>
+            <div id="igre"></div>
+        </div>
+        <div>
+            <h3>ustvari igro:</h3>
+            <input type="text" id="name-input"></input>
+            <br/>
+            <button style="cursor:pointer" onclick="AddGame()">ustvari</button>
+        </div>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        let socket = io();
+
+        socket.on("available-games", (games) => {
+            let elm = document.getElementById("igre");
+            games.forEach(game => {
+                let insert = `<div class="game" id="${game.id}" onclick="JoinGame('${game.id}')">${game.opponent}</div>`;
+                elm.innerHTML = insert + elm.innerHTML;
+            });
+        });
+
+        socket.on("remove-available-game", id => {
+            document.getElementById(id).remove();
+        });
+
+        socket.on("move", url => {
+            location.href = url;
+        })
+
+        function AddGame() {
+            let name = document.getElementById("name-input").value;
+            socket.emit("add-game", name);
+            console.log("add-game", name);
+        }
+
+        function JoinGame(gameid) {
+            console.log("join-game:", gameid);
+            socket.emit("join-game", gameid);
+        }
+
+    </script>
+</body>
+</html>

@@ -1,0 +1,61 @@
+body {
+    font-family: 'Roboto', sans-serif;
+    padding: 0;
+    margin: 0;
+    background-color: rgb(36, 36, 36);
+    color: white;
+    min-height: 100vh;
+    overflow: hidden;
+}
+
+.center {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    justify-content: center;
+    align-items: center;
+}
+
+#board {
+    display: grid;
+    grid-template-columns: repeat(8, auto);
+    user-select: none;
+}
+
+.topBotBar {
+    /* background-color: rgb(60, 60, 60); */
+    height: 5vh;
+}
+
+.square-light {
+    background-color: #f0d9b5;
+}
+
+.square-dark {
+    background-color: #b58863;
+}
+
+.square-selected.square-light {
+    background-color: #f1f500;
+}
+
+.square-selected.square-dark {
+    background-color: #e9ed00;
+}
+
+.black-king { background-image: url("imgs/Chess_kdt45.svg"); }
+.white-king { background-image: url("imgs/Chess_klt45.svg"); }
+.black-queen { background-image: url("imgs/Chess_qdt45.svg"); }
+.white-queen { background-image: url("imgs/Chess_qlt45.svg"); }
+.black-rook { background-image: url("imgs/Chess_rdt45.svg"); }
+.white-rook { background-image: url("imgs/Chess_rlt45.svg"); }
+.black-bishop { background-image: url("imgs/Chess_bdt45.svg"); }
+.white-bishop { background-image: url("imgs/Chess_blt45.svg"); }
+.black-knight { background-image: url("imgs/Chess_ndt45.svg"); }
+.white-knight { background-image: url("imgs/Chess_nlt45.svg"); }
+.black-pawn { background-image: url("imgs/Chess_pdt45.svg"); }
+.white-pawn { background-image: url("imgs/Chess_plt45.svg"); }
+
+.square {
+    background-size: contain;
+}
